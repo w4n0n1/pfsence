@@ -1,0 +1,74 @@
+/etc/rc.reload_all  # Vuelva a cargar el Firewall con toda la configuración. Esto también reinicia la webgui y sshd, pero mantiene activas las sesiones ssh actuales como un reinicio normal de sshd.
+viconfig  # Edite manualmente la configuración en /conf/config.xml. Una vez que se ha guardado el archivo y se ha salido del editor, se elimina /tmp/config.cache para que el siguiente evento de recarga de config cargue config.xml, no la versión almacenada en caché. Puede ejecutar el siguiente comando para activar una recarga instantánea.
+pfctl -s rules  # Mostrar información de regla/filtro
+pfctl -v -s rules  # Mostrar información de regla/filtro para las reglas de FILTRO
+pfctl -vvsr  # Mostrar información de regla/filtro, incluye contadores de reglas, números de identificación, etc.
+pfctl -ss  # Muestra la tabla de estado actual
+pfctl -sr  # Muestra las reglas de filtro actuales
+pfctl -sa  # Muestre tanto como sea posible.
+pfctl -sn  # Muestra las reglas NAT actuales.
+pfctl -v -s nat  # Mostrar información de NAT para qué reglas golpean.
+pfctl -s nat -i ge1  # Mostrar información NAT para la interfaz GE1.
+pfctl -s queue  # Mostrar información de QUEUE.
+pfctl -s label  # Mostrar información de LABEL.
+pfctl -s state  # Mostrar el contenido de la tabla STATE.
+pfctl -s info  # Mostrar estadísticas para tablas de estado y normalización de paquetes.
+pfctl -s all  # Mostrar todo.
+pfctl -e  # Habilitar el filtro de paquetes: habilita todas las funciones del firewall.
+pfctl -d  # Desactivar el filtro de paquetes: desactiva todas las funciones del cortafuegos.
+pfctl -q  # Ejecutar qiuet.
+pfctl -F all  # enjuagar TODO.
+pfctl -F rules  # vaciar sólo las REGLAS.
+pfctl -f queue  # Vaciar solo colas.
+pfctl -F nat  # solo NAT de vaciado.
+pfctl -F info  # Vaciar todas las estadísticas que no forman parte de ninguna regla.
+pfctl -z clear  # Todos los contadores.
+Secuencias de comandos de reproducción - Playback Scripts
+pfSsh.php playback changepassword  # Cambia la contraseña del usuario definido. Solicita restablecer las propiedades de la cuenta si está deshabilitada o caducada.
+
+pfSsh.php playback disablecard  # Activar/desactivar las funciones de alta disponibilidad de CARP. Desactivará las direcciones IP virtuales de CARP. No persiste durante los reinicios.
+pfSsh.php playback enablecarp  # (activar/desastivar lo mismo de arriba).
+
+pfSsh.php playback disablecarpmaint  # Activar/desactivar el modo de mantenimiento CARP. Esto deja a CARP activo, pero degrada la unidad para que otra pueda asumir el control. El modo de mantenimiento persistirá durante los reinicios.
+pfSsh.php playback enablecarpmaint  # (lo mismo de arriba).
+
+pfSsh.php playback disabledhcp  # Quita toda la configuración DHCP del firewall, lo que hace que DHCP esté deshabilitado. Elimina completamente todas sus configuraciones.
+pfSsh.php playback disablereferercheck  # Deshabilita la comprobación de HTTP_REFERER en Aplicación de HTTP_REFERER del explorador. Esto puede ayudar a obtener acceso a la GUI si la sesión del navegador está activando esta protección.
+pfSsh.php playback enableallowallwan  # Agrega una regla de permitir todos para IPv4 e IPv6 a la interfaz WAN (Tenga mucho cuidado con esta opción, está destinada a ser una medida temporal para obtener acceso a los servicios en la interfaz WAN del firewall en situaciones en las que la LAN no es utilizable. Una vez que se hayan implementado las reglas de acceso adecuadas, elimine las reglas agregadas por este script).
+pfSsh.php playback enablesshd  # Habilita el demonio SSH, igual que la opción de menú o en la GUI.
+pfSsh.php playback externalconfiglocator  # Este script busca un archivo config.xml en el dispositivo externo, como una unidad USB. A continuación, muévalo a su lugar para que lo use el firewall.
+pfSsh.php playback gatewaystatus  # Imprime el estado y las estadísticas actuales de la puerta de enlace. Esto también acepta un resumen de parámetros opcional, que imprime solo el nombre y el estado de la puerta de enlace, omitiendo las direcciones y los datos estadísticos.
+pfSsh.php playback generateguicert  # Crea un nuevo certificado autofirmado para el firewall y lo activa para su uso en la GUI. Esto puede ser útil en los casos en que el certificado anterior no es válido o no se puede utilizar. También completa los detalles del certificado utilizando el nombre de host del firewall y otra información personalizada para identificar mejor su host.
+pfSsh.php playback gitsync  # Un script complejo que sincroniza el PHP y otras fuentes de script con los archivos del repositorio de GitHub de pfSense. Esto es más útil en las instantáneas de desarrollo para recoger los cambios de las confirmaciones más recientes.(Este script puede ser peligroso de usar en otras circunstancias. Solo use esto bajo la dirección de un desarrollador o representante de soporte bien informado).
+
+pfSsh.php playback install pkg  #para instalar complementos
+pfSsh.php playback listpkg
+pfSsh.php playback uninstallpkg
+
+pfSsh.php playback pfanchordrill  # Ver reglas adicionales en anclajes de paquetes o características, como UPnP.
+pfSsh.php playback pftabledrill  # Imprime el contenido de todas las tablas pf, que contienen direcciones utilizadas en los alias de firewall, así como tablas de sistema integradas para características como el bloqueo de red bogon, el resoplido y el bloqueo de GUI/SSH. Esto también es útil para verificar si se encuentra una dirección IP específica en cualquier tabla, en lugar de buscar individualmente.
+pfSsh.php playback removepkgconfig  # Quita todos los rastros de datos de configuración del paquete de la configuración en ejecución.xml. Esto puede ser útil si un paquete tiene una configuración dañada o ha dejado los paquetes en un estado incoherente.
+pfSsh.php playback removeshaper  # Quita la configuración del modelador de tráfico ALTQ, que puede ser útil si la configuración del modelador impide que se carguen reglas o es incorrecta e impide el funcionamiento correcto del firewall.
+pfSsh.php playback resetwebgui  # Restablece la configuración de la GUI para widgets, columnas del panel, el tema y otras configuraciones relacionadas con la GUI. Puede devolver la GUI, particularmente el tablero, a un estado estable si no funciona correctamente.
+pfSsh.php playback restartallwan  # Deshabilita y vuelve a habilitar cada interfaz de tipo WAN, que vuelve a aplicar la configuración de la interfaz.
+pfSsh.php playback restartdhcpd  #  Detiene y reinicia el demonio DHCP.
+pfSsh.php playback restartipsec  # Reescribe y vuelve a cargar la configuración de IPsec para strongSwan.
+---------------------------------------------------------------------------------------------------------------------------------
+pfSsh.php playback svc
+playback svc <action> <service name> [service-specific options]
+#Controla los servicios que se ejecutan en el firewall, de forma similar a la interacción con los servicios de Status > Services La acción puede ser detener, iniciar o reiniciar.
+#El nombre del servicio es el nombre de los servicios que se encuentra en Estado > servicios. Si el nombre incluye un espacio, escríbalo entre comillas.
+#Las opciones específicas del servicio varían según el servicio, se utilizan para identificar de forma única los servicios con múltiples instancias, como OpenVPN o entradas de portal cautivo.#
+---------------------------------------------------------------------------------------------------------------------------------------------------------
+easyrule pass/block <interface> <protocol> <source IP> <destination ip> [destination port]
+easyrule pass wan tcp 0.0.0.0/0 192.168.0.1 80
+easyrule pass wan icmp 1.1.1.1 192.168.0.1
+easyrule block wan 1.1.1.1
+# La versión de shell de Easy Rule, easyrule, puede agregar una regla de firewall desde un símbolo del shell. Cuando el comando easyrule se ejecuta sin parámetros, imprime un mensaje de uso para explicar su sintaxis.
+#La forma en que easyrule agrega una regla de bloqueo usando un alias, o una regla de paso precisa que especifica el protocolo, el origen y el destino, funciona de manera similar a la versión de la GUI.
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+pfctl -t addvhosts -T show  # Mostrar tabla addvhosts.
+pfctl -vvsTables  # Ver información global sobre todas las tablas-
+pfctl -t addvhosts -T add 192.168.1.50  # Agregar entrada a la tabla addvhosts.
+pfctl -t addvhosts -T add 192.168.1.0/16  # Agregar una red a la tabla Addvhosts.
