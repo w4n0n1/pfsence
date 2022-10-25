@@ -72,3 +72,12 @@ pfctl -t addvhosts -T show  # Mostrar tabla addvhosts.
 pfctl -vvsTables  # Ver información global sobre todas las tablas-
 pfctl -t addvhosts -T add 192.168.1.50  # Agregar entrada a la tabla addvhosts.
 pfctl -t addvhosts -T add 192.168.1.0/16  # Agregar una red a la tabla Addvhosts.
+pfctl -t addvhosts -T delete 192.168.1.0/16  # Eliminar NeWork de la tabla Addvhosts.
+pfctl -t addvhosts -T flush  # Quitar todas las entradas de la tabla Addvhosts.
+pfctl -t addvhosts -T kill  # Eliminar la tabla addvhosts por completo.
+pfctl -t addvhosts -T replace -f /etc/addvhosts  # Volver a cargar la tabla Addvhosts sobre la marcha.
+pfctl -t addvhosts -T test 192.168.1.40  # Buscar la dirección IP 192.168.1.40 en la tabla AddVHOSTS.
+pfctl -T load -f /etc/pf.conf  # Cargar una nueva definición de tabla.
+pfctl -t addvhosts -T show -v output  # Estadísticas para cada dirección IP en la tabla AddVHOSTS.
+pfctl -t addvhosts -T zero  # Restablecer todos los contadores de la tabla Addvhosts.
+echo “<?php include(‘openvpn.inc’); openvpn_resync_all();?>” | php -q  # Reinicio manual del proceso openVPN.
